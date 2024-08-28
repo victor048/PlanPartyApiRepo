@@ -13,14 +13,14 @@ builder.Services.Configure<MongoDbSettings>(
 builder.Services.AddSingleton<IMongoClient>(sp =>
 {
     var settings = sp.GetRequiredService<IOptions<MongoDbSettings>>().Value;
-    return new MongoClient(settings.ConnectionString); // Usar settings.ConnectionString
+    return new MongoClient(settings.ConnectionString);
 });
 
 builder.Services.AddScoped<IMongoDatabase>(sp =>
 {
     var settings = sp.GetRequiredService<IOptions<MongoDbSettings>>().Value;
     var client = sp.GetRequiredService<IMongoClient>();
-    return client.GetDatabase(settings.DatabaseName); // Usar settings.DatabaseName
+    return client.GetDatabase(settings.DatabaseName);
 });
 
 // Registro dos serviços
@@ -28,6 +28,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IPasswordResetService, PasswordResetService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<MongoDbService>(); // Adicione o serviço aqui
 
 // Adicionar o serviço de hashing de senha
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
@@ -48,9 +49,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthorization();
 
 // Ativar o Swagger

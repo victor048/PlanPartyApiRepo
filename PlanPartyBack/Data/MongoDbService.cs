@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using PlanPartyBack.Models;
 
@@ -8,10 +8,10 @@ namespace PlanPartyBack.Services
     {
         private readonly IMongoDatabase _database;
 
-        public MongoDbService(IConfiguration configuration)
+        public MongoDbService(IOptions<MongoDbSettings> settings)
         {
-            var client = new MongoClient(configuration.GetConnectionString("MongoDB:ConnectionString"));
-            _database = client.GetDatabase(configuration.GetValue<string>("MongoDB:DatabaseName"));
+            var client = new MongoClient(settings.Value.ConnectionString);
+            _database = client.GetDatabase(settings.Value.DatabaseName);
         }
 
         public IMongoCollection<User> Users => _database.GetCollection<User>("Users");
