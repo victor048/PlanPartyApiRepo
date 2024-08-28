@@ -13,7 +13,9 @@ builder.Services.Configure<MongoDbSettings>(
 builder.Services.AddSingleton<IMongoClient>(sp =>
 {
     var settings = sp.GetRequiredService<IOptions<MongoDbSettings>>().Value;
-    return new MongoClient(settings.ConnectionString);
+    var client = new MongoClient(settings.ConnectionString);
+    Console.WriteLine($"MongoDB Connection String: {settings.ConnectionString}");
+    return client;
 });
 
 builder.Services.AddScoped<IMongoDatabase>(sp =>
