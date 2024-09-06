@@ -30,7 +30,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IPasswordResetService, PasswordResetService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
-builder.Services.AddScoped<MongoDbService>(); // Adicione o serviço aqui
+builder.Services.AddScoped<IValidationService, ValidationService>();
+builder.Services.AddScoped<MongoDbService>();
 
 // Adicionar o serviço de hashing de senha
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();

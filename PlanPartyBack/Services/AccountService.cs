@@ -14,21 +14,61 @@ namespace PlanPartyBack.Services
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly IPasswordResetService _passwordResetService;
         private readonly INotificationService _notificationService;
+        private readonly IValidationService _validationService;
 
         public AccountService(
             IMongoDatabase database,
             IPasswordHasher<User> passwordHasher,
             IPasswordResetService passwordResetService,
-            INotificationService notificationService)
+            INotificationService notificationService,
+            IValidationService validationService)
         {
             _users = database.GetCollection<User>("Users");
             _passwordHasher = passwordHasher;
             _passwordResetService = passwordResetService;
             _notificationService = notificationService;
+            _validationService = validationService;
         }
 
         public async Task<bool> CreateAccount(CreateAccountRequest request)
         {
+            if (request.Contact.Contains("@"))
+            {
+                if (!_validationService.IsValidEmail(request.Contact))
+                {
+                    throw new ArgumentException("O e-mail informado não é válido.");
+                }
+
+                if (await _validationService.EmailExistsAsync(request.Contact))
+                {
+                    throw new ArgumentException("O e-mail já está em uso. Por favor, utilize outro e-mail.");
+                }
+            }
+            else if (request.Contact.StartsWith("+") || request.Contact.All(char.IsDigit))
+            {
+                if (!_validationService.IsValidPhoneNumber(request.Contact))
+                {
+                    throw new ArgumentException("O número de telefone informado não é válido.");
+                }
+
+                if (await _validationService.PhoneExistsAsync(request.Contact))
+                {
+                    throw new ArgumentException("O telefone já está em uso. Por favor, utilize outro telefone.");
+                }
+            }
+            else
+            {
+                if (!_validationService.IsValidWhatsAppNumber(request.Contact))
+                {
+                    throw new ArgumentException("O número de WhatsApp informado não é válido.");
+                }
+
+                if (await _validationService.WhatsAppExistsAsync(request.Contact))
+                {
+                    throw new ArgumentException("O WhatsApp já está em uso. Por favor, utilize outro número.");
+                }
+            }
+
             if (request.Password != request.ConfirmPassword)
             {
                 throw new ArgumentException("As senhas não coincidem.");
@@ -40,6 +80,7 @@ namespace PlanPartyBack.Services
                 throw new ArgumentException(passwordValidationResult.ErrorMessage);
             }
 
+            // Criar o usuário
             var user = new User
             {
                 PasswordHash = _passwordHasher.HashPassword(null, request.Password),
