@@ -1,5 +1,6 @@
-﻿using System.Threading.Tasks;
-using PlanPartyBack.Models;
+﻿using PlanPartyBack.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace PlanPartyBack.Services
 {

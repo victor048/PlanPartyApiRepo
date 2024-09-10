@@ -30,5 +30,15 @@ namespace PlanPartyBack.Models
 
         [BsonElement("updatedAt")]
         public DateTime UpdatedAt { get; set; }
+
+        // Campos Adicionais
+        [BsonElement("lastLogin")]
+        public DateTime? LastLogin { get; set; }
+
+        [BsonElement("isActive")]
+        public bool IsActive { get; set; }
+
+        [BsonElement("roles")]
+        public List<string> Roles { get; set; }
     }
 }

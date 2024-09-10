@@ -40,19 +40,13 @@ namespace PlanPartyBack.Services
                 return null;
             }
 
-            //var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
-            //if (result == PasswordVerificationResult.Failed)
-            //{
-            //    return null;
-            //}
+            var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
+            if (result == PasswordVerificationResult.Failed)
+            {
+                return null;
+            }
 
             return user;
         }
-
-        public async Task AddUserAsync(User user)
-        {
-            await _users.InsertOneAsync(user);
-        }
     }
-
 }

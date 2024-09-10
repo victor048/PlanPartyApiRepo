@@ -1,3 +1,4 @@
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -5,6 +6,15 @@ using PlanPartyBack.Models;
 using PlanPartyBack.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+// Configuração do CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+           policy => policy
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
 
 // Configuração do MongoDB
 builder.Services.Configure<MongoDbSettings>(
@@ -36,10 +46,18 @@ builder.Services.AddScoped<MongoDbService>();
 // Adicionar o serviço de hashing de senha
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
+// Adicionar o serviço de sessões
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 // Adicionar o Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -51,8 +69,11 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseCors("AllowAll");
 app.UseStaticFiles();
 app.UseRouting();
+app.UseAuthentication();
+app.UseSession();
 app.UseAuthorization();
 
 // Ativar o Swagger
@@ -68,3 +89,4 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+

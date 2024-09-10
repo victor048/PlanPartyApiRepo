@@ -9,7 +9,5 @@ namespace PlanPartyBack.Services
         Task<User> GetUserByContactInfoAsync(string email, string phone, string whatsApp);
         Task UpdateUserAsync(User user);
         Task<User> AuthenticateAsync(string contact, string password);
-        Task AddUserAsync(User user);
     }
-
 }

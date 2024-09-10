@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Amazon.Runtime.Internal.Util;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PlanPartyBack.Models;
 using PlanPartyBack.Services;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace PlanPartyBack.Controllers
 {
@@ -44,7 +47,6 @@ namespace PlanPartyBack.Controllers
 
             return Ok(user);
         }
-
 
         [HttpPost("create")]
         public async Task<IActionResult> CreateAccount([FromBody] CreateAccountRequest request)
@@ -132,5 +134,6 @@ namespace PlanPartyBack.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
     }
 }

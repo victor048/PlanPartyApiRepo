@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using MongoDB.Driver;
 using PlanPartyBack.Models;
 
@@ -86,7 +82,9 @@ namespace PlanPartyBack.Services
                 PasswordHash = _passwordHasher.HashPassword(null, request.Password),
                 RecoveryOption = request.RecoveryOptions,
                 CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                UpdatedAt = DateTime.UtcNow,
+                IsActive = true,
+                Roles = new List<string>()
             };
 
             if (request.Contact.Contains("@"))
