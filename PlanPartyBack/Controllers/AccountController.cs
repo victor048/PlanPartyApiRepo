@@ -81,11 +81,6 @@ namespace PlanPartyBack.Controllers
 
             var user = await _userService.GetUserByContactInfoAsync(request.Email, request.Phone, request.WhatsApp);
 
-            if (user == null)
-            {
-                return NotFound("Usuário não encontrado.");
-            }
-
             var code = _passwordResetService.GenerateResetCode();
             await _passwordResetService.CreatePasswordResetTokenAsync(user.Id, code, DateTime.UtcNow.AddHours(1));
 
